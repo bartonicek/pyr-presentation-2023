@@ -1,0 +1,77 @@
+
+p {
+  margin-block-start: 0% !important;
+  margin-block-end: 0% !important;
+}
+
+.tiny {
+  font-size: 8pt;
+}
+
+.inverse {
+  background-color: #233F57 !important;
+  color: white !important;
+  text-shadow: none;
+}
+
+.small {
+  font-size: 1.5rem;;
+}
+
+.red {
+  color: firebrick;
+    margin-block-start: 0;
+  margin-block-end: 0;
+
+}
+
+.green {
+  color: seagreen;
+    margin-block-start: 0;
+  margin-block-end: 0;
+
+}
+
+.remark-slide-content {
+  background-color: white;
+  color: #233F57;
+  font-family: Times New Roman;
+  font-size: 2rem;
+  padding: 4rem;
+}
+
+.remark-slide-number {
+  font-size: 1rem;
+}
+
+h1 {
+  font-family: Helvetica;
+}
+
+h2 {
+  font-family: Helvetica;
+}
+
+.title h1 {
+    margin-block-start: 0;
+    margin-block-end: 0;
+}
+
+.subtitle h2 {
+  font-family: Helvetica;
+  margin-block-start: 0;
+}
+
+.author h3, .date h3 {
+  margin-block-start: 0;
+  margin-block-end: 0;
+  font-weight: normal;
+}
+
+.plotscaper {
+  width: 100% !important;
+}
+
+.pull-left, .pull-right {
+  font-size: 2rem;
+}

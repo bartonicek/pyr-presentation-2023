@@ -1,0 +1,466 @@
+---
+title: "Towards Fluent Interactive Data Visualization"
+author: "Adam Bartonicek, University of Auckland <br> (supervised by: Dr. Simon Urbanek, Dr. Paul Murrell)"
+date: "19/05/2023"
+output:
+  xaringan::moon_reader:
+    css: ["default", "styles.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      titleSlideClass: ["left", "middle"]
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+
+class: inverse, center, middle
+
+# Humans are visual creatures...
+
+---
+
+background-image: url('subitize.gif')
+
+---
+
+# The Visual Brain
+
+- About 20-30% percent of our brain is involved in visual processing (Van Essen, 2003)
+- Some visual information is processed pre-attentively:
+  - *Subitizing*: can accurately count 4 items in < 300 ms 
+  - Other visual dimensions such as color, size, and position can also be processed pre-attentively
+  - Especially true with contrast
+
+---
+
+class: center
+# Visual Processing and Data
+
+.pull-left[
+  .tiny[
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+ggplot2::mpg |>
+  dplyr::select(Manufacturer = manufacturer, hwy) |>
+  dplyr::group_by(Manufacturer) |>
+  dplyr::summarise(`Mean mileage` = mean(hwy)) |>
+  knitr::kable()
+
+```
+  ]
+]
+
+.pull-right[
+```{r, echo=FALSE}
+
+ggplot2::ggplot(ggplot2::mpg, ggplot2::aes(manufacturer, hwy)) +
+  ggplot2::stat_summary(fun = "mean", geom = "bar", fill = "steelblue") +
+  ggplot2::coord_flip() +
+  ggplot2::theme_bw() +
+  ggplot2::labs(x = "Manufacturer", y = "Mean mileage") +
+  ggplot2::theme(axis.ticks = ggplot2::element_blank(),
+        panel.grid = ggplot2::element_blank(),
+        plot.margin = ggplot2::margin(0.25, 0.25, 1.5, 1.5))
+
+```
+]
+
+---
+
+# Two Roles of Data Vis.
+
+.pull-left[
+  ## Exploration
+  - Discovering trends and patterns in the data
+  - Finding outliers/errors
+  - Checking model(s)
+]
+
+.pull-right[
+  ## Presentation
+  - Communicating results of an analysis
+  - Garnering attention
+  - Persuading, story-telling
+]
+
+---
+
+class: inverse, middle
+> "The greatest value of a picture is when it forces us to notice what we never expected to see."
+>
+> (Tukey, 1977)
+
+---
+
+class: inverse, center, middle
+# What's better than being able to see something?
+
+---
+
+class: inverse, center, middle
+# Being able to *poke it* and *seeing* what happens.
+
+---
+
+# Interactive Data Visualization
+
+- Many (often very different) definitions
+- Based around ideas such as:
+  - Users can **change** the visualization
+  - Change happens at high enough **speed**
+  - Users can **query** different parts of the dataset
+  - Change propagates between multiple **linked** plots
+  - Users can manipulate **parameters** of an underlying mathematical model
+
+---
+
+class: inverse, center, middle
+# Interactive data visualization seems great for exploration...
+
+---
+
+class: inverse, center, middle
+# Few people use interactive visualization to explore data.
+
+---
+
+class: middle
+
+
+> "Rapid advances in the power, simplicity, and familiarity of visualization combined with an increasing awareness of the potential of visual communication have pushed the field to the cusp of mainstream breakthrough in society.  
+
+> [...] Still, very few data science tools and workflows actually employ interactive visualization as anything more than a mere communication tool used to disseminate results at the end of an investigation to stakeholders and the general public."
+
+> (Batch & Elmquist, 2017)
+
+---
+
+class: center, middle
+
+.pull-left[
+  ## Exploration ✗
+]
+
+.pull-right[
+  ## Presentation ✓
+]
+
+---
+
+class: inverse, center, middle
+
+# Why is that?
+
+---
+
+# Two branches: History
+
+.pull-left[
+.center[## Statistics]
+- Started in the 1970's
+- Standalone or integrated with stat. computing software (e.g. XLisp, R)
+- PRIM-9, XGobi/GGobi, XLispStat, Mondrian, iPlots
+]
+
+.pull-right[
+.center[## CS]
+- Started in 2000's
+- Made for Web
+- Prefuse, D3, plotly, highcharter, Vega/Vega-lite
+]
+
+---
+
+class: inverse
+background-image: url('prim9a.gif')
+background-size: contain
+
+# PRIM 9
+
+---
+
+class: inverse
+background-image: url('ggobi1.jpg')
+background-size: contain
+
+# GGobi
+
+---
+
+background-image: url('plotly.png')
+background-size: contain
+
+# Plotly
+
+
+---
+
+# Two branches: Approaches
+
+.pull-left[
+.center[## Statistics]
+- Data exploration
+- Specialized but low code
+- Limited suite of interoperable plots
+- Target users: researchers, working statisticians
+- Target end-users: ditto
+]
+
+.pull-right[
+.center[## CS]
+- Data presentation
+- Flexible but high code  
+- Users responsible for coherent interaction
+- Target users: programmers
+- Target end-users: anyone with a web browser
+]
+
+---
+
+class: inverse, center, middle
+
+# Interactive vis. became dominated by the CS branch
+
+---
+
+# Why this matters?
+
+.pull-left[
+.green[
+- Part of scientist's job is to communicate findings
+- Highly customizable systems are great when many people will see the results
+- No limits to creativity
+]
+]
+
+.pull-right[
+.red[
+- Need to discover the findings in the first place 
+- Time/effort cost may be too high when $n = 1$
+- Unpredictable/footgun
+- Hard to implement complex interactions
+  ]
+]
+
+
+---
+
+class: middle
+
+>"Interactivity appeared only once in our study, in a sketch; this indicates that the desire to build interactive views is present within the data science community, but the costs of using the tools outweigh the need during initial exploration."
+  
+>Batch & Elmquist, 2017
+
+.small[.center[(sample size of 8, but is this surprising?)]]
+
+---
+
+# Data Exploration vs. Presentation
+
+- Two very different ecological niches
+- Fundamentally different goals?
+
+> "Graphical excellence is that which gives to the viewer the greatest number of ideas in the shortest time with the least ink in the smallest space."
+
+> *[...and least interaction?]*
+
+> Tufte, 2001
+
+---
+
+class: inverse, center, middle
+# Could we combine exploration, ease of use, flexibility, and consistency?
+
+---
+
+# The Idea: Plotscaper
+
+- Goal: an interactive data exploration system aimed at researchers and data scientists
+- Mid-level framework/the *Goldilocks zone*: 
+  - Low-code enough so that exploration is cost-effective
+  - Flexible enough for a wide range of visualizations
+  - Build interactive figures out of composable pieces ("like" `ggplot2`)
+- Predictable two-way interactions, especially brushing
+- Easy to set up multiplot figures with shared data & state
+
+---
+
+# The Fundamental Problem
+
+- Consistent two-way interaction is not easy!
+- Linked brushing: most important
+- Every graphical object represents a statistical summary on a partition of the data (`geoms` and `stats` in `ggplot2`)
+
+> *What if some kinds of statistical summaries "work" and others don't?*
+
+---
+
+background-image: url('figure01.png')
+background-size: contain
+
+---
+
+background-image: url('figure02.png')
+background-size: contain
+
+---
+
+class: inverse, center, middle
+# Need some kind of structure...
+
+---
+
+# Monoids: Definition
+
+- A Monoid $(X, e, \otimes)$ is a tuple that consists of:
+  - An ordered set $X$ (e.g. $\mathbb{R}^+$)
+  - A "neutral" element $e \in X$
+  - A binary function $\otimes : X \times X \to X$  
+  
+  
+- Such that:
+  - $x \otimes e = e \otimes x = x$, for all $x \in X$ (unitality)
+  - $(x \otimes y) \otimes z = x \otimes (y \otimes z)$, for all $x, y, z \in X$ (associativity)
+
+---
+
+class: center, middle, inverse
+
+# *In English: "A whole that's just the 'sum' of its parts"*
+
+---
+
+# Monoids Examples 1
+
+- Sums: $(\mathbb{R}^+, \leq, 0, +)$
+  - $x + 0 = x$
+  - $(x + y) + z = x + (y + z)$  
+  
+  
+- Products: $(\mathbb{R}, \leq, 1, \times)$
+  - $x \cdot 1 = x$
+  - $(x \cdot y) \cdot z = x \cdot (y \cdot z)$  
+  
+  
+- Counts: $(\mathbb{N}, \leq, 0, + 1)$
+- Sums of vectors: $(\mathbf{Vec_2}, | \cdot |, (0, 0), +)$
+- Matrix products $(\mathbf{Matrix}, \mathbf{Det}, \mathbf{I}, \cdot)$
+
+---
+
+# Monoids: Examples 2
+
+- But there's nothing in the definition of a Monoid that says that numeric quantities need to be involved:
+
+```{r}
+
+paste("", "hello")
+
+paste(paste("hello", "world"), "bye") 
+
+paste("hello", paste("world", "bye"))
+
+```
+
+
+---
+
+# Monoids: Extra Properties
+
+- We can also impose some additional properties: 
+
+  - $x \otimes y = y \otimes x$, for all $x, y \in X$ (symmetry)
+  - If $x_1 \leq x_2$ and $y_1 \leq y_2$, then $x_1 \otimes y_1 \leq x_2 \otimes y_2$, for all $x_1, x_2, y_1, y_2 \in X$ (monotonicity)
+  
+  
+- These may be important for graphics: 
+  - The order in which we combine should not matter
+  - Accumulation should happen in one direction only (e.g. length, area, angle)
+
+---
+
+class: center, middle, inverse
+
+# *"Symmetric monoidal structure on a total order"*
+
+---
+
+class: inverse, center, middle
+# How can Monoids help us?
+
+---
+
+class: center, middle
+# Objects as Pairs of Monoids
+
+.pull-left[
+## Statistical Summary
+- E.g. sum, count, product
+]
+
+.pull-right[
+## Graphical Encoding
+- E.g. length, area, angle
+]
+
+---
+
+# The Plotscaper Model
+
+1. Graphical objects represent (nested) partitions of the data
+2. A set of statistical summaries is applied to the partitions
+3. The summaries apply across all levels of partitioning
+  + .small[*(E.g. sum of x across the entire dataset, sum of x within a bar, sum of x within a group within a bar)*] 
+  
+4. Change of parameters propagates reactively, from parent partitions to child partitions
+  + .small[*(E.g. in a histogram, brushing does not affect the binwidth, however, changing binwidth does affect the brushed counts)*]
+
+
+---
+
+background-image: url('figure10.png')
+background-size: contain
+
+---
+
+# Implementation: Prototype
+
+```{r, eval = FALSE}
+devtools::install_github("bartonicek/plotscaper")
+```
+
+- 5 wrapper plot types: 
+  - scatterplot, barplot, histogram, bubbleplot, squareplot
+- Supported interactivity: 
+  - transient/persistent selection
+  - panning, changing size and alpha
+- Just a JS file: Runs in RStudio viewer, RMarkdown,...
+- CSS grid layout for interesting figures
+
+---
+
+# Implementation: New Version
+
+- A more general version is currently in the works
+- Same basic features as the prototype + extra
+- Idea: 2 main composable pieces:
+  - Wrangler(s): partition and summarize the data 
+  - Representation(s): encode summaries into objects
+- Written using Typescript, Solid JS for reactivity, no other external libraries/packages
+
+---
+
+# References
+
+.small[
+- Batch, Andrea, and Niklas Elmqvist. 2017. “The Interactive Visualization Gap in Initial Exploratory Data Analysis.” *IEEE Transactions on Visualization and Computer Graphics* 24 (1): 278–87.
+- Tufte, Edward R. 2001. *The Visual Display of Quantitative Information*. Cheshire, Connecticut: Graphics Press LLC.
+- Tukey, J. W. (1977). Exploratory data analysis (Vol. 2, pp. 131-160).
+- Van Essen, David C. "Organization of visual areas in macaque and human cerebral cortex." The visual neurosciences 1 (2003): 507-521.
+]

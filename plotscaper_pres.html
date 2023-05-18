@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Towards Fluent Interactive Data Visualization</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Adam Bartonicek, University of Auckland   (supervised by: Dr. Simon Urbanek, Dr. Paul Murrell)" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: left, middle, title-slide
+
+.title[
+# Towards Fluent Interactive Data Visualization
+]
+.author[
+### Adam Bartonicek, University of Auckland <br> (supervised by: Dr. Simon Urbanek, Dr. Paul Murrell)
+]
+.date[
+### 19/05/2023
+]
+
+---
+
+
+
+
+class: inverse, center, middle
+
+# Humans are visual creatures...
+
+---
+
+background-image: url('subitize.gif')
+
+---
+
+# The Visual Brain
+
+- About 20-30% percent of our brain is involved in visual processing (Van Essen, 2003)
+- Some visual information is processed pre-attentively:
+  - *Subitizing*: can accurately count 4 items in &lt; 300 ms 
+  - Other visual dimensions such as color, size, and position can also be processed pre-attentively
+  - Especially true with contrast
+
+---
+
+class: center
+# Visual Processing and Data
+
+.pull-left[
+  .tiny[
+
+|Manufacturer | Mean mileage|
+|:------------|------------:|
+|audi         |     26.44444|
+|chevrolet    |     21.89474|
+|dodge        |     17.94595|
+|ford         |     19.36000|
+|honda        |     32.55556|
+|hyundai      |     26.85714|
+|jeep         |     17.62500|
+|land rover   |     16.50000|
+|lincoln      |     17.00000|
+|mercury      |     18.00000|
+|nissan       |     24.61538|
+|pontiac      |     26.40000|
+|subaru       |     25.57143|
+|toyota       |     24.91176|
+|volkswagen   |     29.22222|
+  ]
+]
+
+.pull-right[
+![](plotscaper_pres_files/figure-html/unnamed-chunk-2-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# Two Roles of Data Vis.
+
+.pull-left[
+  ## Exploration
+  - Discovering trends and patterns in the data
+  - Finding outliers/errors
+  - Checking model(s)
+]
+
+.pull-right[
+  ## Presentation
+  - Communicating results of an analysis
+  - Garnering attention
+  - Persuading, story-telling
+]
+
+---
+
+class: inverse, middle
+&gt; "The greatest value of a picture is when it forces us to notice what we never expected to see."
+&gt;
+&gt; (Tukey, 1977)
+
+---
+
+class: inverse, center, middle
+# What's better than being able to see something?
+
+---
+
+class: inverse, center, middle
+# Being able to *poke it* and *seeing* what happens.
+
+---
+
+# Interactive Data Visualization
+
+- Many (often very different) definitions
+- Based around ideas such as:
+  - Users can **change** the visualization
+  - Change happens at high enough **speed**
+  - Users can **query** different parts of the dataset
+  - Change propagates between multiple **linked** plots
+  - Users can manipulate **parameters** of an underlying mathematical model
+
+---
+
+class: inverse, center, middle
+# Interactive data visualization seems great for exploration...
+
+---
+
+class: inverse, center, middle
+# Few people use interactive visualization to explore data.
+
+---
+
+class: middle
+
+
+&gt; "Rapid advances in the power, simplicity, and familiarity of visualization combined with an increasing awareness of the potential of visual communication have pushed the field to the cusp of mainstream breakthrough in society.  
+
+&gt; [...] Still, very few data science tools and workflows actually employ interactive visualization as anything more than a mere communication tool used to disseminate results at the end of an investigation to stakeholders and the general public."
+
+&gt; (Batch &amp; Elmquist, 2017)
+
+---
+
+class: center, middle
+
+.pull-left[
+  ## Exploration ✗
+]
+
+.pull-right[
+  ## Presentation ✓
+]
+
+---
+
+class: inverse, center, middle
+
+# Why is that?
+
+---
+
+# Two branches: History
+
+.pull-left[
+.center[## Statistics]
+- Started in the 1970's
+- Standalone or integrated with stat. computing software (e.g. XLisp, R)
+- PRIM-9, XGobi/GGobi, XLispStat, Mondrian, iPlots
+]
+
+.pull-right[
+.center[## CS]
+- Started in 2000's
+- Made for Web
+- Prefuse, D3, plotly, highcharter, Vega/Vega-lite
+]
+
+---
+
+class: inverse
+background-image: url('prim9a.gif')
+background-size: contain
+
+# PRIM 9
+
+---
+
+class: inverse
+background-image: url('ggobi1.jpg')
+background-size: contain
+
+# GGobi
+
+---
+
+background-image: url('plotly.png')
+background-size: contain
+
+# Plotly
+
+
+---
+
+# Two branches: Approaches
+
+.pull-left[
+.center[## Statistics]
+- Data exploration
+- Specialized but low code
+- Limited suite of interoperable plots
+- Target users: researchers, working statisticians
+- Target end-users: ditto
+]
+
+.pull-right[
+.center[## CS]
+- Data presentation
+- Flexible but high code  
+- Users responsible for coherent interaction
+- Target users: programmers
+- Target end-users: anyone with a web browser
+]
+
+---
+
+class: inverse, center, middle
+
+# Interactive vis. became dominated by the CS branch
+
+---
+
+# Why this matters?
+
+.pull-left[
+.green[
+- Part of scientist's job is to communicate findings
+- Highly customizable systems are great when many people will see the results
+- No limits to creativity
+]
+]
+
+.pull-right[
+.red[
+- Need to discover the findings in the first place 
+- Time/effort cost may be too high when `\(n = 1\)`
+- Unpredictable/footgun
+- Hard to implement complex interactions
+  ]
+]
+
+
+---
+
+class: middle
+
+&gt;"Interactivity appeared only once in our study, in a sketch; this indicates that the desire to build interactive views is present within the data science community, but the costs of using the tools outweigh the need during initial exploration."
+  
+&gt;Batch &amp; Elmquist, 2017
+
+.small[.center[(sample size of 8, but is this surprising?)]]
+
+---
+
+# Data Exploration vs. Presentation
+
+- Two very different ecological niches
+- Fundamentally different goals?
+
+&gt; "Graphical excellence is that which gives to the viewer the greatest number of ideas in the shortest time with the least ink in the smallest space."
+
+&gt; *[...and least interaction?]*
+
+&gt; Tufte, 2001
+
+---
+
+class: inverse, center, middle
+# Could we combine exploration, ease of use, flexibility, and consistency?
+
+---
+
+# The Idea: Plotscaper
+
+- Goal: an interactive data exploration system aimed at researchers and data scientists
+- Mid-level framework/the *Goldilocks zone*: 
+  - Low-code enough so that exploration is cost-effective
+  - Flexible enough for a wide range of visualizations
+  - Build interactive figures out of composable pieces ("like" `ggplot2`)
+- Predictable two-way interactions, especially brushing
+- Easy to set up multiplot figures with shared data &amp; state
+
+---
+
+# The Fundamental Problem
+
+- Consistent two-way interaction is not easy!
+- Linked brushing: most important
+- Every graphical object represents a statistical summary on a partition of the data (`geoms` and `stats` in `ggplot2`)
+
+&gt; *What if some kinds of statistical summaries "work" and others don't?*
+
+---
+
+background-image: url('figure01.png')
+background-size: contain
+
+---
+
+background-image: url('figure02.png')
+background-size: contain
+
+---
+
+class: inverse, center, middle
+# Need some kind of structure...
+
+---
+
+# Monoids: Definition
+
+- A Monoid `\((X, e, \otimes)\)` is a tuple that consists of:
+  - An ordered set `\(X\)` (e.g. `\(\mathbb{R}^+\)`)
+  - A "neutral" element `\(e \in X\)`
+  - A binary function `\(\otimes : X \times X \to X\)`  
+  
+  
+- Such that:
+  - `\(x \otimes e = e \otimes x = x\)`, for all `\(x \in X\)` (unitality)
+  - `\((x \otimes y) \otimes z = x \otimes (y \otimes z)\)`, for all `\(x, y, z \in X\)` (associativity)
+
+---
+
+class: center, middle, inverse
+
+# *In English: "A whole that's just the 'sum' of its parts"*
+
+---
+
+# Monoids Examples 1
+
+- Sums: `\((\mathbb{R}^+, \leq, 0, +)\)`
+  - `\(x + 0 = x\)`
+  - `\((x + y) + z = x + (y + z)\)`  
+  
+  
+- Products: `\((\mathbb{R}, \leq, 1, \times)\)`
+  - `\(x \cdot 1 = x\)`
+  - `\((x \cdot y) \cdot z = x \cdot (y \cdot z)\)`  
+  
+  
+- Counts: `\((\mathbb{N}, \leq, 0, + 1)\)`
+- Sums of vectors: `\((\mathbf{Vec_2}, | \cdot |, (0, 0), +)\)`
+- Matrix products `\((\mathbf{Matrix}, \mathbf{Det}, \mathbf{I}, \cdot)\)`
+
+---
+
+# Monoids: Examples 2
+
+- But there's nothing in the definition of a Monoid that says that numeric quantities need to be involved:
+
+
+```r
+paste("", "hello")
+```
+
+```
+## [1] " hello"
+```
+
+```r
+paste(paste("hello", "world"), "bye") 
+```
+
+```
+## [1] "hello world bye"
+```
+
+```r
+paste("hello", paste("world", "bye"))
+```
+
+```
+## [1] "hello world bye"
+```
+
+
+---
+
+# Monoids: Extra Properties
+
+- We can also impose some additional properties: 
+
+  - `\(x \otimes y = y \otimes x\)`, for all `\(x, y \in X\)` (symmetry)
+  - If `\(x_1 \leq x_2\)` and `\(y_1 \leq y_2\)`, then `\(x_1 \otimes y_1 \leq x_2 \otimes y_2\)`, for all `\(x_1, x_2, y_1, y_2 \in X\)` (monotonicity)
+  
+  
+- These may be important for graphics: 
+  - The order in which we combine should not matter
+  - Accumulation should happen in one direction only (e.g. length, area, angle)
+
+---
+
+class: center, middle, inverse
+
+# *"Symmetric monoidal structure on a total order"*
+
+---
+
+class: inverse, center, middle
+# How can Monoids help us?
+
+---
+
+class: center, middle
+# Objects as Pairs of Monoids
+
+.pull-left[
+## Statistical Summary
+- E.g. sum, count, product
+]
+
+.pull-right[
+## Graphical Encoding
+- E.g. length, area, angle
+]
+
+---
+
+# The Plotscaper Model
+
+1. Graphical objects represent (nested) partitions of the data
+2. A set of statistical summaries is applied to the partitions
+3. The summaries apply across all levels of partitioning
+  + .small[*(E.g. sum of x across the entire dataset, sum of x within a bar, sum of x within a group within a bar)*] 
+  
+4. Change of parameters propagates reactively, from parent partitions to child partitions
+  + .small[*(E.g. in a histogram, brushing does not affect the binwidth, however, changing binwidth does affect the brushed counts)*]
+
+
+---
+
+background-image: url('figure10.png')
+background-size: contain
+
+---
+
+# Implementation: Prototype
+
+
+```r
+devtools::install_github("bartonicek/plotscaper")
+```
+
+- 5 wrapper plot types: 
+  - scatterplot, barplot, histogram, bubbleplot, squareplot
+- Supported interactivity: 
+  - transient/persistent selection
+  - panning, changing size and alpha
+- Just a JS file: Runs in RStudio viewer, RMarkdown,...
+- CSS grid layout for interesting figures
+
+---
+
+# Implementation: New Version
+
+- A more general version is currently in the works
+- Same basic features as the prototype + extra
+- Idea: 2 main composable pieces:
+  - Wrangler(s): partition and summarize the data 
+  - Representation(s): encode summaries into objects
+- Written using Typescript, Solid JS for reactivity, no other external libraries/packages
+
+---
+
+# References
+
+.small[
+- Batch, Andrea, and Niklas Elmqvist. 2017. “The Interactive Visualization Gap in Initial Exploratory Data Analysis.” *IEEE Transactions on Visualization and Computer Graphics* 24 (1): 278–87.
+- Tufte, Edward R. 2001. *The Visual Display of Quantitative Information*. Cheshire, Connecticut: Graphics Press LLC.
+- Tukey, J. W. (1977). Exploratory data analysis (Vol. 2, pp. 131-160).
+- Van Essen, David C. "Organization of visual areas in macaque and human cerebral cortex." The visual neurosciences 1 (2003): 507-521.
+]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
