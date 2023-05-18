@@ -396,19 +396,22 @@ paste("hello", paste("world", "bye"))
 
 - We can also impose some additional properties: 
 
-  - `\(x \otimes y = y \otimes x\)`, for all `\(x, y \in X\)` (symmetry)
-  - If `\(x_1 \leq x_2\)` and `\(y_1 \leq y_2\)`, then `\(x_1 \otimes y_1 \leq x_2 \otimes y_2\)`, for all `\(x_1, x_2, y_1, y_2 \in X\)` (monotonicity)
-  
-  
-- These may be important for graphics: 
-  - The order in which we combine should not matter
-  - Accumulation should happen in one direction only (e.g. length, area, angle)
+
+- `\(x \otimes y = y \otimes x\)`, for all `\(x, y \in X\)` (symmetry)
+- If `\(x_1 \leq x_2\)` and `\(y_1 \leq y_2\)`, then `\(x_1 \otimes y_1 \leq x_2 \otimes y_2\)`, for all `\(x_1, x_2, y_1, y_2 \in X\)` (monotonicity)
+
+
+- I.e. *"the direction of combining things does not matter"* &amp; *"accumulation happens in one direction"* (where might that be relevant?)
 
 ---
 
-class: center, middle, inverse
+# Monoids: Counterexamples
 
-# *"Symmetric monoidal structure on a total order"*
+- Exponentiation: `\(x^{({y^z})} \neq (x^y)^z\)`
+- Means, variances
+- Products on `\(\mathbb{R}\)` are monoids but not monotonic: &lt;br&gt; `\((-2) \leq 1\)` but `\((-2) \cdot (-2) \not \leq 1 \cdot 1\)` 
+- (products on `\(\mathbb{R}^+\)` are monotonic though)
+- Matrix products are not symmetric: `\(AB \neq BA\)`
 
 ---
 
